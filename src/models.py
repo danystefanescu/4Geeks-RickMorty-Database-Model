@@ -17,41 +17,63 @@ class User(Base):
     email = Column(String(25), nullable=False, unique=True)
     active = Column(Boolean, default=True)
 
-class Post(Base):
-    __tablename__ = 'post'
+class Characters(Base):
+    __tablename__ = 'characters'
     id = Column(Integer, primary_key=True)
-    content = Column(String(250))
-    image_url = Column(String(250))
+    name = Column(String(250), nullable=False, unique=True)
+    status = Column(Boolean, default=True)
+    species = Column(String(250), nullable=False)
+    gender = Column(String(250), nullable=False)
+
+class Character_user(Base):
+    __tablename__ = 'character_user'
+    id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
-
-class Comment(Base):
-    __tablename__ = 'comment'
+    character_id = Column(Integer, ForeignKey('characters.id'))
+    character = relationship(Characters)
+   
+class Locations(Base):
+    __tablename__ = 'locations'
     id = Column(Integer, primary_key=True)
-    content = Column(String(250), nullable=False)
+    name = Column(String(250), nullable=False, unique=True)
+    type = Column(String(250), nullable=False)
+    dimension = Column(String(250), nullable=False)
+
+class Location_user(Base):
+    __tablename__ = 'location_user'
+    id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
-    post_id = Column(Integer, ForeignKey('post.id'))
-    post = relationship(Post)
+    location_id = Column(Integer, ForeignKey('locations.id'))
+    location = relationship(Locations)
 
-class Media(Base):
-    __tablename__ = 'media'
+class Episodes(Base):
+    __tablename__ = 'episodes'
     id = Column(Integer, primary_key=True)
-    url = Column(String(250), nullable=False)
-    post_id = Column(Integer, ForeignKey('post.id'))
-    post = relationship(Post)
+    name = Column(String(250), nullable=False, unique=True)
+    air_date = Column(String(250), nullable=False)
+    episode = Column(String(250), nullable=False)
 
-class Follower(Base):
-    __tablename__ = 'follower'
+class Episode_user(Base):
+    __tablename__ = 'episode_user'
     id = Column(Integer, primary_key=True)
-    user_from_id = Column(Integer, ForeignKey('user.id'))
-    user_to_id = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
+    episode_id = Column(Integer, ForeignKey('episodes.id'))
+    episode = relationship(Episodes)
 
+class Favorites(Base):
+    __tablename__ = 'favorites'
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
+    character_id = Column(Integer, ForeignKey('characters.id'))
+    character = relationship(Characters)
+    location_id = Column(Integer, ForeignKey('locations.id'))
+    location = relationship(Locations)
+    episode_id = Column(Integer, ForeignKey('episodes.id'))
+    episode = relationship(Episodes)
 
-    
-
-#person_id = Column(Integer, ForeignKey('person.id'))
-#person = relationship(Person)
 ## Draw from SQLAlchemy base
 render_er(Base, 'diagram.png')
